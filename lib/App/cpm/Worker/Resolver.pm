@@ -13,7 +13,10 @@ sub new {
     my @backends;
     for my $r (@{$option{resolver}}) {
         my $klass;
-        if ($r->{cpanmetadb}) {
+        if ($r->{menlo}) {
+            $klass = "App::cpm::Worker::Resolver::Menlo";
+            $r->{menlo} = $option{installer}->{menlo};
+        } elsif ($r->{cpanmetadb}) {
             $klass = "App::cpm::Worker::Resolver::MetaDB";
         } elsif ($r->{snapshot}) {
             $klass = "App::cpm::Worker::Resolver::Snapshot";

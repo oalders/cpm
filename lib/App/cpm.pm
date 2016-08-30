@@ -49,6 +49,10 @@ sub parse_options {
         "test!" => sub { $self->{notest} = $_[1] ? 0 : 1 },
         "cpanfile=s" => \($self->{cpanfile}),
         "snapshot=s" => \($self->{snapshot}),
+        "mirror-only" => \($self->{mirror_only}),
+        "mirror-index=s" => \($self->{mirror_index}),
+        "with-develop" => \($self->{with_develop}),
+        "sudo" => \($self->{sudo}),
     or exit 1;
 
     $self->{local_lib} = abs_path $self->{local_lib} unless $self->{global};
@@ -153,9 +157,14 @@ sub cmd_install {
         notest          => $self->{notest},
         ($self->{global} ? () : (local_lib => $self->{local_lib})),
         resolver => [
+            ( $self->{mirror_index} ? {menlo => 1} : () ),
             (!@argv && -f $self->{snapshot} ? {snapshot => $self->{snapshot}} : ()),
             { cpanmetadb => $self->{cpanmetadb} },
         ],
+        mirror_index => $self->{mirror_index},
+        mirror_only  => $self->{mirror_only},
+        sudo         => $self->{sudo},
+        with_develop => $self->{with_develop},
     );
     my $pipes = Parallel::Pipes->new($self->{workers}, sub {
         my $job = shift;

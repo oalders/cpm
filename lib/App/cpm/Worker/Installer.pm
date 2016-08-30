@@ -68,7 +68,12 @@ sub new {
         try_curl => 0,
         try_lwp  => 0,
         notest   => $option{notest},
+        mirror_index => delete $option{mirror_index},
+        mirror_only  => delete $option{mirror_only},
+        sudo         => delete $option{sudo},
+        with_develop => delete $option{develop},
     );
+
     if (my $local_lib = delete $option{local_lib}) {
         $menlo->{self_contained} = 1;
         $menlo->setup_local_lib($menlo->maybe_abs($local_lib));
